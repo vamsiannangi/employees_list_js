@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Management</title>
+<style>
+    body {
+        background-color: black;
+        color: white;
+        font-family: Arial, sans-serif;
+    }
+
+    form {
+        margin-bottom: 20px;
+    }
+
+    form label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    form input[type="text"],
+    form input[type="number"] {
+        width: 100%;
+        padding: 5px;
+        margin-bottom: 10px;
+    }
+
+    form button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .success-message {
+        color: green;
+    }
+
+    .error-message {
+        color: red;
+    }
+
+    .employee-box {
+        background-color: #333;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .employee-box p {
+        margin: 5px 0;
+    }
+
+    .employee-box button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+    <form id="employeeForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" ><br>
+        <label for="profession">Profession:</label>
+        <input type="text" id="profession" ><br>
+        <label for="age">Age:</label>
+        <input type="number" id="age" ><br>
+        <button type="submit">Add Employee</button>
+    </form>
+    <div id="successMessage" class="success-message" style="display:none;"></div>
+    <div id="errorMessage" class="error-message" style="display:none;"></div>
+    <h2>Added Employees</h2>
+    <div id="employeeList"></div>
+
+    <script>
+        let employees = [];
+
+        const form = document.getElementById('employeeForm');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const employeeList = document.getElementById('employeeList');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const profession = document.getElementById('profession').value;
+            const age = parseInt(document.getElementById('age').value);
+
+            if (name.trim() === '' || profession.trim() === '' || isNaN(age)) {
+                errorMessage.textContent = 'All fields are required.';
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+            } else {
+                const employee = {
+                    id: employees.length + 1,
+                    name: name,
+                    profession: profession,
+                    age: age
+                };
+                employees.push(employee);
+                renderEmployees();
+                successMessage.textContent = 'Employee added successfully.';
+                successMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+                form.reset();
+            }
+
+            // Hide messages after 3 seconds
+            setTimeout(function() {
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+            }, 3000);
+        });
+
+        function renderEmployees() {
+            employeeList.innerHTML = '';
+            employees.forEach(employee => {
+                const div = document.createElement('div');
+                div.classList.add('employee-box');
+                div.innerHTML = `
+                    <p>ID: ${employee.id}</p>
+                    <p>Name: ${employee.name}</p>
+                    <p>Profession: ${employee.profession}</p>
+                    <p>Age: ${employee.age}</p>
+                    <button onclick="deleteEmployee(${employee.id})">Delete</button>
+                `;
+                employeeList.appendChild(div);
+            });
+        }
+
+        function deleteEmployee(id) {
+            employees = employees.filter(employee => employee.id !== id);
+            renderEmployees();
+        }
+    </script>
+</body>
+</html>
